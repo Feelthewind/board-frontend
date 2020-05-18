@@ -45,7 +45,15 @@ export default {
       signIn: "auth/signIn",
     }),
     submit() {
-      this.signIn(this.form);
+      this.signIn(this.form)
+        .then(() => {
+          this.$router.replace({
+            name: "board",
+          });
+        })
+        .catch(() => {
+          console.log("failed");
+        });
     },
   },
 };

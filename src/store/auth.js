@@ -6,6 +6,14 @@ export default {
     token: null,
     user: null,
   },
+  getters: {
+    authenticated(state) {
+      return state.token && state.user;
+    },
+    user(state) {
+      return state.user;
+    },
+  },
   mutations: {
     SET_TOKEN(state, token) {
       state.token = token;
@@ -25,11 +33,7 @@ export default {
       commit("SET_TOKEN", token);
 
       try {
-        const response = await axios.get("auth/me", {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        });
+        const response = await axios.get("auth/me");
 
         commit("SET_USER", response.data);
       } catch (e) {
