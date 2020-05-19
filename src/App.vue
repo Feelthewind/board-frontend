@@ -14,11 +14,11 @@ import bus from "./utils/bus.js";
 export default {
   components: {
     TheNavigation,
-    Spinner
+    Spinner,
   },
   data() {
     return {
-      LoadingStatus: false
+      LoadingStatus: false,
     };
   },
   methods: {
@@ -27,7 +27,7 @@ export default {
     },
     endSpinner() {
       this.LoadingStatus = false;
-    }
+    },
   },
   created() {
     bus.$on("start:spinner", this.startSpinner);
@@ -36,7 +36,7 @@ export default {
   beforeDestroy() {
     bus.$off("start:spinner");
     bus.$off("end:spinner");
-  }
+  },
 };
 </script>
 

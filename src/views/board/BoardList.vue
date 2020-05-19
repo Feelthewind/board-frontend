@@ -4,7 +4,7 @@
     <div v-for="post in posts.data" :key="post.id">
       <div class="post-item" @click="rowClick(post.id)">
         <div class="post-item__left">{{ post.title }}</div>
-        <div class="post-item__right">{{ post.description }}</div>
+        <div class="post-item__right" v-html="post.description"></div>
       </div>
     </div>
     <button @click="writeContent" class="btn-write">글쓰기</button>
@@ -26,7 +26,7 @@ import Pagination from "@/components/Pagination";
 export default {
   name: "board-list",
   components: {
-    Pagination
+    Pagination,
   },
   created() {
     bus.$emit("start:spinner");
@@ -35,26 +35,26 @@ export default {
     });
   },
   computed: mapState({
-    posts: state => state.board.posts
+    posts: (state) => state.board.posts,
   }),
   methods: {
     ...mapActions({
-      fetchPosts: "board/fetchPosts"
+      fetchPosts: "board/fetchPosts",
     }),
     rowClick(id) {
       this.$router.push({
-        path: `/board/detail/${id}`
+        path: `/board/detail/${id}`,
       });
     },
     writeContent() {
       this.$router.push({
-        path: `/board/create`
+        path: `/board/create`,
       });
     },
     updatePage(pageNumber) {
       this.fetchPosts(pageNumber);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -69,10 +69,20 @@ export default {
 
   &__left {
     flex: 1;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 8px;
   }
 
   &__right {
     flex: 3;
+    max-height: 1.8em;
+    line-height: 1.8em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 .btn-write {
@@ -89,6 +99,3 @@ export default {
   }
 }
 </style>
-
-
-

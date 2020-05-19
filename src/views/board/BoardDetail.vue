@@ -2,6 +2,7 @@
   <div>
     <div>Board Detail</div>
     <div v-if="post">{{ post.title }}</div>
+    <div v-if="post" v-html="post.description"></div>
     <div v-if="authenticated">
       <button @click="updateData" class="btn-update">수정</button>
       <button @click="deleteData" class="btn-delete">삭제</button>
@@ -16,16 +17,16 @@ import bus from "../../utils/bus.js";
 export default {
   computed: {
     ...mapState({
-      post: state => state.board.currentPost
+      post: (state) => state.board.currentPost,
     }),
     ...mapGetters({
-      authenticated: "auth/authenticated"
-    })
+      authenticated: "auth/authenticated",
+    }),
   },
   data() {
     const contentId = Number(this.$route.params.contentId);
     return {
-      contentId
+      contentId,
     };
   },
   created() {
@@ -38,20 +39,20 @@ export default {
   methods: {
     ...mapActions({
       getPost: "board/getPost",
-      deletePost: "board/deletePost"
+      deletePost: "board/deletePost",
     }),
     updateData() {
       this.$router.push({
-        path: `/board/create/${this.contentId}`
+        path: `/board/create/${this.contentId}`,
       });
     },
     deleteData() {
       this.deletePost(this.contentId);
       this.$router.replace({
-        path: `/board`
+        path: `/board`,
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

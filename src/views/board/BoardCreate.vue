@@ -3,23 +3,31 @@
     <div>
       <input v-model="form.title" placeholder="제목" />
     </div>
-    <div>
+    <!-- <div>
       <textarea v-model="form.description" placeholder="내용" rows="10" />
-    </div>
+    </div> -->
+    <!-- <wysiwyg v-model="form.description" /> -->
+    <vue-editor v-model="form.description"></vue-editor>
     <button
       @click="updateMode ? update() : upload()"
       class="btn-save"
       :disabled="!form.description || !form.title"
-    >저장</button>
+    >
+      저장
+    </button>
     <button @click="cancel" class="btn-cancel">취소</button>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
+import { VueEditor } from "vue2-editor";
 
 export default {
   name: "board-create",
+  components: {
+    VueEditor,
+  },
   data() {
     const contentId = Number(this.$route.params.contentId);
 
@@ -27,57 +35,60 @@ export default {
       form: {
         title: "",
         description: "",
-        image: "1.gif"
+        image: "1.gif",
       },
       updateMode: this.$route.params.contentId > 0 ? true : false,
-      contentId
+      contentId,
+      myHTML: "",
     };
   },
   created() {
     if (this.$route.params.contentId > 0) {
       const contentId = Number(this.$route.params.contentId);
-      const updateObject = this.posts.filter(post => post.id === contentId)[0];
+      const updateObject = this.posts.filter(
+        (post) => post.id === contentId
+      )[0];
       this.form.title = updateObject.title;
       this.form.description = updateObject.description;
     }
   },
   computed: {
     ...mapState({
-      posts: state => state.board.posts.data
-    })
+      posts: (state) => state.board.posts.data,
+    }),
     // disabled: !this.form.title || !this.form.description
   },
   methods: {
     ...mapActions({
       createPost: "board/createPost",
-      updatePost: "board/updatePost"
+      updatePost: "board/updatePost",
     }),
     upload() {
       this.createPost(this.form).then(() => {
         this.$router.replace({
-          name: "board-list"
+          name: "board-list",
         });
       });
     },
     update() {
       this.updatePost({ ...this.form, id: this.contentId }).then(() => {
         this.$router.push({
-          name: "board-list"
+          name: "board-list",
         });
       });
     },
     cancel() {
       if (this.$route.params.contentId > 0) {
         this.$router.push({
-          path: "/board/detail/" + this.$route.params.contentId
+          path: "/board/detail/" + this.$route.params.contentId,
         });
       } else {
         this.$router.push({
-          path: "/board"
+          path: "/board",
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
