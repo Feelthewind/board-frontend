@@ -71,7 +71,10 @@ export default {
       updatePost: "board/updatePost",
     }),
     upload() {
-      this.createPost(this.form).then(() => {
+      this.createPost({
+        ...this.form,
+        images: this.files,
+      }).then(() => {
         this.$router.replace({
           name: "board-list",
         });
@@ -126,7 +129,7 @@ export default {
         .then((result) => {
           console.log(result);
           let url = result.data.url; // Get url from response
-          this.files.push(url.slice(1));
+          this.files.push(url.slice(9));
 
           Editor.insertEmbed(
             cursorLocation,
@@ -140,13 +143,17 @@ export default {
         });
     },
     handleImageRemoved: function(file) {
+      console.log("handleImageRemoved called!");
       const data = file.split("/uploads/");
       axios
         .post("deleteimages", {
-          images: [`uploads/${data[1]}`],
+          images: [data[1]],
         })
-        .then((result) => {
-          console.log(result);
+        .then(() => {
+          // console.log(result);
+          console.log(this.files);
+          this.files = this.files.filter((f) => f !== data[1]);
+          console.log(this.files);
         })
         .catch((err) => {
           console.log(err);
