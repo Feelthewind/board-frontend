@@ -7,7 +7,11 @@
       <textarea v-model="form.description" placeholder="내용" rows="10" />
     </div> -->
     <!-- <wysiwyg v-model="form.description" /> -->
-    <vue-editor v-model="form.description"></vue-editor>
+    <vue-editor
+      v-model="form.description"
+      useCustomImageHandler
+      @image-added="handleImageAdded"
+    ></vue-editor>
     <button
       @click="updateMode ? update() : upload()"
       class="btn-save"
@@ -22,6 +26,7 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import { VueEditor } from "vue2-editor";
+import axios from "axios";
 
 export default {
   name: "board-create",
@@ -87,6 +92,34 @@ export default {
           path: "/board",
         });
       }
+    },
+    handleImageAdded: function(file, Editor, cursorLocation, resetUploader) {
+      // An example of using FormData
+      // NOTE: Your key could be different such as:
+      // formData.append('file', file)
+
+      var formData = new FormData();
+      formData.append("image", file);
+
+      console.log(file);
+      console.log(Editor);
+      console.log(cursorLocation);
+      console.log(resetUploader);
+      axios
+        .post("uploadimage", formData)
+        .then((result) => {
+          console.log(result);
+          let url = result.data.url; // Get url from response
+          Editor.insertEmbed(
+            cursorLocation,
+            "image",
+            `http://127.0.0.1:8000${url}`
+          );
+          resetUploader();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };
