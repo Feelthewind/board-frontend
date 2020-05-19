@@ -11,6 +11,7 @@
       v-model="form.description"
       useCustomImageHandler
       @image-added="handleImageAdded"
+      @image-removed="handleImageRemoved"
     ></vue-editor>
     <button
       @click="updateMode ? update() : upload()"
@@ -116,6 +117,32 @@ export default {
             `http://127.0.0.1:8000${url}`
           );
           resetUploader();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    handleImageRemoved: function(file, Editor, cursorLocation, resetUploader) {
+      const data = file.split("/uploads/");
+      var formData = new FormData();
+      formData.append("image", `uploads/${data[1]}`);
+
+      console.log(file);
+      console.log(Editor);
+      console.log(cursorLocation);
+      console.log(resetUploader);
+
+      axios
+        .post("deleteimage", formData)
+        .then((result) => {
+          console.log(result);
+          // let url = result.data.url; // Get url from response
+          // Editor.insertEmbed(
+          //   cursorLocation,
+          //   "image",
+          //   `http://127.0.0.1:8000${url}`
+          // );
+          // resetUploader();
         })
         .catch((err) => {
           console.log(err);
