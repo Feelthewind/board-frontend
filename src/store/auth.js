@@ -29,8 +29,14 @@ export default {
       dispatch("attempt", response.data.token);
     },
 
-    async attempt({ commit }, token) {
-      commit("SET_TOKEN", token);
+    async attempt({ commit, state }, token) {
+      if (token) {
+        commit("SET_TOKEN", token);
+      }
+
+      if (!state.token) {
+        return;
+      }
 
       try {
         const response = await axios.get("auth/me");
@@ -40,6 +46,13 @@ export default {
         commit("SET_TOKEN", null);
         commit("SET_USER", null);
       }
+    },
+    async register(_, credentials) {
+      const response = await axios.post("users", credentials);
+
+      console.log(response);
+
+      // dispatch("attempt", response.data.token);
     },
   },
 };
