@@ -46,6 +46,7 @@ export default {
       updateMode: this.$route.params.contentId > 0 ? true : false,
       contentId,
       myHTML: "",
+      files: [],
     };
   },
   created() {
@@ -84,6 +85,20 @@ export default {
       });
     },
     cancel() {
+      // 이미지 삭제
+      if (this.files.length > 0) {
+        axios
+          .post("deleteimages", {
+            images: this.files,
+          })
+          .then((result) => {
+            console.log(result);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+
       if (this.$route.params.contentId > 0) {
         this.$router.push({
           path: "/board/detail/" + this.$route.params.contentId,
@@ -111,6 +126,8 @@ export default {
         .then((result) => {
           console.log(result);
           let url = result.data.url; // Get url from response
+          this.files.push(url.slice(1));
+
           Editor.insertEmbed(
             cursorLocation,
             "image",
@@ -122,27 +139,14 @@ export default {
           console.log(err);
         });
     },
-    handleImageRemoved: function(file, Editor, cursorLocation, resetUploader) {
+    handleImageRemoved: function(file) {
       const data = file.split("/uploads/");
-      var formData = new FormData();
-      formData.append("image", `uploads/${data[1]}`);
-
-      console.log(file);
-      console.log(Editor);
-      console.log(cursorLocation);
-      console.log(resetUploader);
-
       axios
-        .post("deleteimage", formData)
+        .post("deleteimages", {
+          images: [`uploads/${data[1]}`],
+        })
         .then((result) => {
           console.log(result);
-          // let url = result.data.url; // Get url from response
-          // Editor.insertEmbed(
-          //   cursorLocation,
-          //   "image",
-          //   `http://127.0.0.1:8000${url}`
-          // );
-          // resetUploader();
         })
         .catch((err) => {
           console.log(err);
