@@ -12,8 +12,6 @@ Vue.config.productionTip = false;
 
 store.dispatch("auth/attempt", localStorage.getItem("token")).then(() => {
   router.beforeEach((to, from, next) => {
-    console.log("dfdf");
-    console.log(to.matched[0]);
     if (to.matched.some((record) => record.meta.requiresAuth)) {
       if (!store.getters["auth/authenticated"]) {
         next({

@@ -1,23 +1,27 @@
 <template>
-  <div>
-    <div>Board Detail</div>
-    <div v-if="post">{{ post.title }}</div>
-    <div v-if="post" v-html="post.description"></div>
-    <div v-if="authenticated">
-      <button @click="updateData" class="btn-update">수정</button>
-      <button @click="deleteData" class="btn-delete">삭제</button>
+  <div v-if="post">
+    <div>{{ post.title }}</div>
+    <div v-html="post.description"></div>
+    <div v-if="authenticated && user.id === post.user_id">
+      <app-button name="수정" :onClick="updateData" />
+      <app-button name="삭제" :onClick="deleteData" />
     </div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState, mapGetters } from "vuex";
+import AppButton from "@/components/Button";
 import bus from "../../utils/bus.js";
 
 export default {
+  components: {
+    AppButton,
+  },
   computed: {
     ...mapState({
       post: (state) => state.board.currentPost,
+      user: (state) => state.auth.user,
     }),
     ...mapGetters({
       authenticated: "auth/authenticated",

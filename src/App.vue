@@ -1,24 +1,24 @@
 <template>
   <div id="app" class="container">
-    <TheNavigation />
+    <navigation />
     <router-view />
-    <spinner :loading="LoadingStatus"></spinner>
+    <spinner :loading="LoadingStatus" />
   </div>
 </template>
 
 <script>
-import TheNavigation from "@/components/TheNavigation";
+import Navigation from "@/components/Navigation";
 import Spinner from "@/components/Spinner";
 import bus from "./utils/bus.js";
 
 export default {
   components: {
-    TheNavigation,
-    Spinner,
+    Navigation,
+    Spinner
   },
   data() {
     return {
-      LoadingStatus: false,
+      LoadingStatus: false
     };
   },
   methods: {
@@ -27,7 +27,7 @@ export default {
     },
     endSpinner() {
       this.LoadingStatus = false;
-    },
+    }
   },
   created() {
     bus.$on("start:spinner", this.startSpinner);
@@ -36,7 +36,7 @@ export default {
   beforeDestroy() {
     bus.$off("start:spinner");
     bus.$off("end:spinner");
-  },
+  }
 };
 </script>
 

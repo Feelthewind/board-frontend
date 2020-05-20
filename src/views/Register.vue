@@ -40,7 +40,12 @@
       <button
         type="submit"
         class="btn-submit"
-        :disabled="!form.email || !form.password || !form.password_confirmation && form.password !== form.password_confirmation"
+        :disabled="
+          !form.email ||
+            !form.password ||
+            !form.password_confirmation ||
+            form.password !== form.password_confirmation
+        "
       >Register</button>
     </div>
 
@@ -53,8 +58,6 @@ import { mapActions } from "vuex";
 
 export default {
   name: "register",
-  components: {},
-
   data() {
     return {
       form: {
@@ -82,17 +85,6 @@ export default {
       this.$router.push({
         path: "/board"
       });
-      // .then(() => {
-      //   this.$router.push({
-      //     path: "/board"
-      //   });
-      //   // this.$router.replace(this.$route.query.redirect || '/')
-      // })
-      // .catch(e => {
-      //   console.log("failed");
-      //   console.log(e);
-      //   this.error = true;
-      // });
     }
   }
 };
@@ -134,5 +126,3 @@ label {
   }
 }
 </style>
-
-

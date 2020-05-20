@@ -48,11 +48,7 @@ export default {
       }
     },
     async register(_, credentials) {
-      const response = await axios.post("users", credentials);
-
-      console.log(response);
-
-      // dispatch("attempt", response.data.token);
+      await axios.post("users", credentials);
     },
   },
 };

@@ -34,3 +34,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.pagination-btn {
+  cursor: pointer;
+}
+</style>

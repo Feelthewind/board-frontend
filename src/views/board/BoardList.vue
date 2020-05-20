@@ -1,38 +1,66 @@
 <template>
-  <div v-if="posts">
-    <div>Board List</div>
-    <div v-for="post in posts.data" :key="post.id">
-      <div class="post-item" @click="rowClick(post.id)">
-        <div class="post-item__left">{{ post.title }}</div>
-        <div class="post-item__right" v-html="post.description"></div>
-      </div>
-    </div>
-    <button @click="writeContent" class="btn-write">글쓰기</button>
+  <div>
+    <div v-if="loading"></div>
+    <template v-else>
+      <div v-if="posts && posts.data.length > 0">
+        <div v-for="post in posts.data" :key="post.id">
+          <div class="post-item" @click="rowClick(post.id)">
+            <div class="post-item__left">{{ post.title }}</div>
+            <div
+              class="post-item__right"
+              v-html="formatDescription(post.description)"
+            ></div>
+            <div>{{ formatDate(post.created_at) }}</div>
+          </div>
+        </div>
 
-    <Pagination
-      :total="posts.total"
-      :currentPage="posts.current_page"
-      :pageSize="posts.per_page"
-      v-on:page:update="updatePage"
-    />
+        <div class="pagination">
+          <Pagination
+            :total="posts.total"
+            :currentPage="posts.current_page"
+            :pageSize="posts.per_page"
+            v-on:page:update="updatePage"
+          />
+        </div>
+      </div>
+      <div v-else>
+        <p class="empty-message">첫 글을 작성해주세요.</p>
+      </div>
+
+      <app-button name="글쓰기" :onClick="writeContent" />
+    </template>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
+import moment from "moment";
 import bus from "../../utils/bus.js";
 import Pagination from "@/components/Pagination";
+import AppButton from "@/components/Button";
 
 export default {
-  name: "board-list",
+  name: "boardList",
   components: {
     Pagination,
+    AppButton,
+  },
+  data() {
+    return {
+      loading: false,
+    };
   },
   created() {
+    this.loading = true;
     bus.$emit("start:spinner");
-    this.fetchPosts().then(() => {
-      bus.$emit("end:spinner");
-    });
+    this.fetchPosts()
+      .then(() => {
+        this.loading = false;
+        bus.$emit("end:spinner");
+      })
+      .catch(() => {
+        this.loading = false;
+      });
   },
   computed: mapState({
     posts: (state) => state.board.posts,
@@ -53,6 +81,12 @@ export default {
     },
     updatePage(pageNumber) {
       this.fetchPosts(pageNumber);
+    },
+    formatDescription(description) {
+      return description.replace(/<img .*?>/g, "");
+    },
+    formatDate(date) {
+      return moment(date).format("YYYY-MM-DD");
     },
   },
 };
@@ -97,5 +131,12 @@ export default {
   &:hover {
     background: darken(#60bd4f, 10%);
   }
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+}
+.empty-message {
+  text-align: center;
 }
 </style>

@@ -35,21 +35,12 @@ const routes = [
   },
   {
     path: "/board",
-    name: "board-list",
+    name: "boardList",
     component: BoardList,
-    // beforeEnter: (to, from, next) => {
-    //   if (store.getters["auth/authenticated"]) {
-    //     return next({
-    //       name: "signin",
-    //     });
-    //   }
-
-    //   next();
-    // },
   },
   {
     path: "/board/create/:contentId?",
-    name: "board-create",
+    name: "boardCreate",
     component: BoardCreate,
     meta: {
       requiresAuth: true,
@@ -58,7 +49,7 @@ const routes = [
   },
   {
     path: "/board/detail/:contentId",
-    name: "board-detail",
+    name: "boardDetail",
     component: BoardDetail,
   },
   {

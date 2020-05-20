@@ -1,17 +1,16 @@
 <template>
   <ul class="nav">
     <li>
-      {{ user }}
       <router-link :to="{
           name: 'home',
         }">Home</router-link>
     </li>
     <li>
       <router-link :to="{
-          name: 'board-list',
+          name: 'boardList',
         }">Board</router-link>
     </li>
-    <li v-if="authenticated">{{ user.name }} {{ user.email }}</li>
+    <li v-if="authenticated">{{ user.name }}</li>
     <template v-else>
       <li>
         <router-link :to="{
@@ -44,7 +43,7 @@ export default {
 .nav {
   display: flex;
   list-style: none;
-  padding: 15px 0;
+  padding: 15px 15px;
   margin: 0;
   justify-content: flex-end;
   background: #f5f8fa;
